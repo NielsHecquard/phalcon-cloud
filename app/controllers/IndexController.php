@@ -7,7 +7,6 @@ class IndexController extends ControllerBase
     	$bootstrap=$this->jquery->bootstrap();
     	$bt=$bootstrap->htmlButton("btMyDisques","Mes Disques","primary");
     	$bt->setProperty("data-ajax", "MyDisques")->addLabel("//TODO 4.2","info");
-		echo "coucou";
 
     	$bt=$bootstrap->htmlButton("btScanOne","Disque Datas (id=1)","info");
     	$bt->setProperty("data-ajax", "Scan/index/1")->addLabel("//TODO 4.3","primary");
@@ -17,6 +16,8 @@ class IndexController extends ControllerBase
 
     	$this->jquery->getOnClick("a.btn, button.btn","","#content",array("attr"=>"data-ajax"));
     	$this->jquery->compile($this->view);
+
+
     }
 }
 

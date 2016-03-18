@@ -34,7 +34,7 @@
 					<li id='mainNav-navzone-1-li-1'><a id='mainNav-navzone-1-link-1'
 						href="#">Créer un Disque</a></li>
 					<li id='mainNav-navzone-1-li-2'><a id='mainNav-navzone-1-link-2'
-						href="#">Mes disques</a></li>
+						href="MyDisques">Mes disques</a></li>
 				</ul>
 			</div>
 			<!-- /.navbar-collapse -->
