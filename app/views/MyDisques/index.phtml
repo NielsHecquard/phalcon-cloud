@@ -9,7 +9,7 @@
                 foreach($noms as $nom) {
                     echo '<span class="glyphicon glyphicon-hdd"></span>' . ' ';
                     echo $nom . ' ';
-                    echo $occupations[$nom] . "octets/" . $quotas[$nom] . "octets";
+                    echo $occupations[$nom] . "octets/" . $quotas[$nom] . $unites[$nom];
                     $nom = trim($nom);
                     echo $pgbs[$i];
                     echo '<a class=\'btn btn-primary add\' style="width: 100%" href=\'Scan/'. $ids[$nom] . '\' >Créer un disque</a> <br/><br/>';

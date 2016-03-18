@@ -51,7 +51,8 @@ class MyDisquesController extends \ControllerBase {
 			$noms[$nom] = $nom;
 			$ids[$nom] = $id;
 			$occupations[$nom] = $occupation;
-			$quotas[$nom] = $quotaOctet;
+			$quotas[$nom] = $quota;
+			$unites[$nom] = $unite;
 			$nb+=1;
 		}
 		$this->view->pgbs = $pgbs;
@@ -59,5 +60,6 @@ class MyDisquesController extends \ControllerBase {
 		$this->view->ids = $ids;
 		$this->view->occupations = $occupations;
 		$this->view->quotas = $quotas;
+		$this->view->unites = $unites;
 	}
 }
