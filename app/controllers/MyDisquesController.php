@@ -50,7 +50,19 @@ class MyDisquesController extends \ControllerBase {
 			$pgbs[$nb] = $pgb;
 			$noms[$nom] = $nom;
 			$ids[$nom] = $id;
-			$occupations[$nom] = $occupation;
+			if($occupation < 1000) {
+				$occupations[$nom] = $occupation;
+				$unites2[$nom] = "octets";
+			}
+			elseif($occupation < 1000000) {
+				$occupations[$nom] = $occupation/1000;
+				$unites2[$nom] = "Ko";
+			}
+			else {
+				$occupations[$nom] = $occupation/1000000;
+				$unites2[$nom] = "Mo";
+			}
+
 			$quotas[$nom] = $quota;
 			$unites[$nom] = $unite;
 			$nb+=1;
@@ -61,5 +73,6 @@ class MyDisquesController extends \ControllerBase {
 		$this->view->occupations = $occupations;
 		$this->view->quotas = $quotas;
 		$this->view->unites = $unites;
+		$this->view->unites2 = $unites2;
 	}
 }
