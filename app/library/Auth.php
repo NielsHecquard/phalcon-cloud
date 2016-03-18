@@ -60,4 +60,5 @@ class Auth {
 		}
 		return $bt;
 	}
+
 }
