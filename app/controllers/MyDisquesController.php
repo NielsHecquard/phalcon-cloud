@@ -9,9 +9,6 @@ class MyDisquesController extends \ControllerBase {
 		$user = Auth::getUser($this);
 		$this->view->user = $user;
 
-		$pgbs=[];
-		$noms=[];
-
 		$disques = Disque::find(
 			array(
 				"conditions" => "idUtilisateur = 1"
@@ -20,6 +17,7 @@ class MyDisquesController extends \ControllerBase {
 		$nb=0;
 		foreach($disques as $disque) {
 			$nom = $disque->getNom();
+			$id = $disque->getId();
 			$occupation = ModelUtils::getDisqueOccupation($this->config->cloud, $disque);
 			$tarif = Tarif::find(
 				array(
@@ -32,6 +30,7 @@ class MyDisquesController extends \ControllerBase {
 			$conversion = ModelUtils::sizeConverter($unite);
 			$quotaOctet = $quota * $conversion;
 			$ratio = ($occupation/$quotaOctet)*100;
+			$ratio = round($ratio, 2);
 			$pgb = $jquery->bootstrap()->htmlProgressbar("pgb");
 			$pgb->setStriped(true);
 			if($ratio<10) {
@@ -47,12 +46,18 @@ class MyDisquesController extends \ControllerBase {
 				$pgb->setStyle("danger");
 			}
 			$pgb->setValue($ratio);
+			$pgb->showCaption(true);
 			$pgbs[$nb] = $pgb;
 			$noms[$nom] = $nom;
+			$ids[$nom] = $id;
+			$occupations[$nom] = $occupation;
+			$quotas[$nom] = $quotaOctet;
 			$nb+=1;
 		}
 		$this->view->pgbs = $pgbs;
 		$this->view->noms = $noms;
-		$this->view->nb = $nb;
+		$this->view->ids = $ids;
+		$this->view->occupations = $occupations;
+		$this->view->quotas = $quotas;
 	}
 }
