@@ -105,7 +105,7 @@ class DirectoryUtils {
 
 	/**
 	 * Formate un nombre $size en octets
-	 * @param nimber $size
+	 * @param number $size
 	 * @param number $precision
 	 * @return string
 	 */

@@ -3,12 +3,77 @@
 class ScanController extends ControllerBase {
 
 	/**
-	 * Affiche les informations relatives à l'id du disque passé en paramétre
+	 * Affiche les informations relatives à l'id du disque passé en paramètre
 	 * @param int $idDisque id du disque à afficher
 	 */
 	public function indexAction($idDisque) {
-		//TODO 4.3
-		$diskName="nom du disque.......................";
+		$this->assets
+			->addJs('js/jquery-file-upload/jquery.knob.js')
+			->addJs('js/jquery-file-upload/jquery.ui.widget.js')
+			->addJs('js/jquery-file-upload/jquery.iframe-transport.js')
+			->addJs('js/jquery-file-upload/jquery.fileupload.js')
+			->addJs('js/jquery-file-upload/script.js');
+		$diskName = "Nom du disque............";
+		$disque = Disque::findFirst(
+			array(
+				"conditions" => "id = ?1",
+				"bind" => array(1 => $idDisque)
+			)
+		);
+		$nomDisque = $disque->getNom();
+
+		$user = Auth::getUser($this);
+
+		$occupation = ModelUtils::getDisqueOccupation($this->config->cloud, $disque);
+		$disqueTarif = DisqueTarif::findFirst(
+			array(
+				"conditions" => "idDisque = ?1",
+				"order" => "startDate desc",
+				"bind" => array(1 => $idDisque)
+			)
+		);
+		$disqueTarif = $disqueTarif->getIdTarif();
+		$tarif = Tarif::findFirst(
+			array(
+				"conditions" => "id = ?1",
+				"bind" => array(1 => $disqueTarif)
+			)
+		);
+		$quota = $tarif->getQuota();
+		$unite = $tarif->getUnite();
+		$quotaOctet = ModelUtils::sizeConverter($unite);
+		$quotaOctet *= $quota;
+		$ratio = round( (($occupation/$quotaOctet)*100), 2);
+		switch($unite) {
+			case 'o':
+				break;
+			case 'Ko':
+				$occupation /= 1000;
+				break;
+			case 'Mo':
+				$occupation /= 1000000;
+				break;
+			case 'Go':
+				$occupation /= 1000000000;
+				break;
+		}
+
+		if($ratio<10) {
+			$class = "label-info";
+			$label = "peu Occupé";
+		}
+		elseif($ratio<50) {
+			$class = "label-success";
+			$label = "RAS";
+		}
+		elseif($ratio<80) {
+			$class = "label-warning";
+			$label = "Forte occupation";
+		}
+		elseif($ratio<=100) {
+			$class = "label-danger";
+			$label = "Proche saturation";
+		}
 
 
 		$this->jquery->execOn("click", "#ckSelectAll", "$('.toDelete').prop('checked', $(this).prop('checked'));$('#btDelete').toggle($('.toDelete:checked').length>0)");
@@ -20,6 +85,14 @@ class ScanController extends ControllerBase {
 		$this->jquery->exec("window.location.hash='';scan('".$diskName."')",true);
 
 		$this->jquery->compile($this->view);
+		$this->view->nomDisque = $nomDisque;
+		$this->view->user = $user;
+		$this->view->ratio = $ratio;
+		$this->view->unite = $unite;
+		$this->view->quota = $quota;
+		$this->view->occupation = $occupation;
+		$this->view->label = $label;
+		$this->view->class = $class;
 	}
 
 	/**
