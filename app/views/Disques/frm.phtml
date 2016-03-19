@@ -1,0 +1,41 @@
+<?php use Phalcon\Tag; ?>
+<h2>Création d'un disque</h2>
+<?php
+    //Certaines classes de jquery bootstrap tels que HtmlForm et HtmlInput ne sont pas reconnues, je passe donc par les formulaires phalcon
+    echo Tag::form("Disques/update");
+?>
+<label for="nom">Nom : </label>
+<?php echo Tag::textField(array("nom","required")) ?>
+<br/>
+<label for="user">Utilisateur : </label>
+<?php echo Tag::select(
+    array(
+        "idUtilisateur",
+        Utilisateur::find(),
+        'using' => array('id', 'nom')
+    )
+);
+?>
+<br/>
+<label for="service">Service : </label>
+<?php
+    foreach($checkboxes as $id => $checkbox) {
+        echo "<label class=\"checkbox-inline\">";
+        echo Tag::checkField($checkbox);
+        echo $id . "</label>";
+    }
+?>
+<br/>
+<label for="tarif">Tarif : </label>
+<?php echo Tag::select(
+    array(
+        "idTarif",
+        Tarif::find(array("columns" => array("id", "concat(quota, ' ', unite) as quota"))),
+        'using' => array('id', 'quota')
+    )
+);
+?>
+<br/>
+<?php echo Tag::submitButton("Envoyer");
+    echo Tag::endForm();
+?>

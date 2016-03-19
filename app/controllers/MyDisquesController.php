@@ -31,6 +31,7 @@ class MyDisquesController extends \ControllerBase {
 			$quotaOctet = $quota * $conversion;
 			$ratio = ($occupation/$quotaOctet)*100;
 			$ratio = round($ratio, 2);
+
 			$pgb = $jquery->bootstrap()->htmlProgressbar("pgb");
 			$pgb->setStriped(true);
 			if($ratio<10) {
@@ -48,6 +49,7 @@ class MyDisquesController extends \ControllerBase {
 			$pgb->setValue($ratio);
 			$pgb->showCaption(true);
 			$pgbs[$nb] = $pgb;
+
 			$noms[$nom] = $nom;
 			$ids[$nom] = $id;
 			if($occupation < 1000) {

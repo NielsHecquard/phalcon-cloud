@@ -19,9 +19,59 @@ class DisquesController extends \DefaultController {
 
 	public function frmAction($id=NULL){
 		$disque=$this->getInstance($id);
-		//TODO 4.4.1
+		$jquery=$this->jquery;
+		$this->jquery->compile($this->view);
 		$this->view->setVars(array("disque"=>$disque,"siteUrl"=>$this->url->getBaseUri(),"baseHref"=>$this->dispatcher->getControllerName()));
+
+		$services = Service::find();
+		foreach($services as $service) {
+			$checkboxes[$service->getNom()] = array("services[]", "value" => $service->getId());
+		}
+		$this->view->checkboxes = $checkboxes;
 		parent::frmAction($id);
+	}
+
+	public function updateAction()
+	{
+		$disque = new Disque();
+		$disque->save(
+			array(
+				'nom' => $this->request->getPost("nom"),
+				'idUtilisateur' => $this->request->getPost("idUtilisateur")
+			)
+		);
+		foreach ($disque->getMessages() as $message) {
+			$params[] = $message->getMessage();
+		}
+		$idDisque = $disque->getId();
+		$params["idDisque"] = $idDisque;
+
+		foreach($_POST["services"] as $service) {
+			$disqueService = new DisqueService();
+			$disqueService->save(
+				array(
+					'idDisque' => $idDisque,
+					'idService' => $service
+				)
+			);
+			foreach ($disqueService->getMessages() as $message) {
+				$params[] = $message->getMessage();
+			}
+		}
+
+		$disqueTarif = new DisqueTarif();
+		$disqueTarif->save(
+			array(
+				'idDisque' => $idDisque,
+				'idTarif' => $this->request->getPost("idTarif"),
+				'startDate' => date("Y-m-d h:m:s")
+			)
+		);
+		foreach ($disqueTarif->getMessages() as $message) {
+			$params[] = $message->getMessage();
+		}
+
+		$this->_postUpdateAction($params);
 	}
 
 	/**
@@ -30,7 +80,7 @@ class DisquesController extends \DefaultController {
 	 * @param array $params
 	 */
 	protected function _postUpdateAction($params){
-		//TODO 4.4.1
+		$this->dispatcher->forward(array("controller"=>"Scan","action"=>"index","params"=>$params));
 	}
 
 
